@@ -3,7 +3,7 @@ open Parsecalc;;
 exception Eof;;
 }
 let white = [' ' '\t']+
-let nexline = '\r' | '\n' | "\r\n"
+let newline = '\r' | '\n' | "\r\n"
 let digit = ['0'-'9']
 let frac = '.' digit*
 let exp = ['e' 'E'] ['-' '+']?
