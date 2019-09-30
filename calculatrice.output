@@ -1,0 +1,333 @@
+   0  $accept : %entry% $end
+
+   1  statement : expr SEP statement
+   2            | expr
+
+   3  expr : expr ADD expr
+   4       | expr SUB expr
+   5       | expr MUL expr
+   6       | expr DIV expr
+   7       | expr EXP expr
+   8       | VAR EQU expr
+   9       | PARO expr PARF
+  10       | INT
+  11       | FLOAT
+  12       | VAR
+
+  13  %entry% : '\001' statement
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . statement  (13)
+
+	PARO  shift 3
+	INT  shift 4
+	FLOAT  shift 5
+	VAR  shift 6
+	.  error
+
+	statement  goto 7
+	expr  goto 8
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	expr : PARO . expr PARF  (9)
+
+	PARO  shift 3
+	INT  shift 4
+	FLOAT  shift 5
+	VAR  shift 6
+	.  error
+
+	expr  goto 9
+
+
+state 4
+	expr : INT .  (10)
+
+	.  reduce 10
+
+
+state 5
+	expr : FLOAT .  (11)
+
+	.  reduce 11
+
+
+state 6
+	expr : VAR . EQU expr  (8)
+	expr : VAR .  (12)
+
+	EQU  shift 10
+	$end  reduce 12
+	ADD  reduce 12
+	SUB  reduce 12
+	MUL  reduce 12
+	DIV  reduce 12
+	EXP  reduce 12
+	PARF  reduce 12
+	SEP  reduce 12
+
+
+state 7
+	%entry% : '\001' statement .  (13)
+
+	.  reduce 13
+
+
+state 8
+	statement : expr . SEP statement  (1)
+	statement : expr .  (2)
+	expr : expr . ADD expr  (3)
+	expr : expr . SUB expr  (4)
+	expr : expr . MUL expr  (5)
+	expr : expr . DIV expr  (6)
+	expr : expr . EXP expr  (7)
+
+	ADD  shift 11
+	SUB  shift 12
+	MUL  shift 13
+	DIV  shift 14
+	EXP  shift 15
+	SEP  shift 16
+	$end  reduce 2
+
+
+state 9
+	expr : expr . ADD expr  (3)
+	expr : expr . SUB expr  (4)
+	expr : expr . MUL expr  (5)
+	expr : expr . DIV expr  (6)
+	expr : expr . EXP expr  (7)
+	expr : PARO expr . PARF  (9)
+
+	ADD  shift 11
+	SUB  shift 12
+	MUL  shift 13
+	DIV  shift 14
+	EXP  shift 15
+	PARF  shift 17
+	.  error
+
+
+state 10
+	expr : VAR EQU . expr  (8)
+
+	PARO  shift 3
+	INT  shift 4
+	FLOAT  shift 5
+	VAR  shift 6
+	.  error
+
+	expr  goto 18
+
+
+state 11
+	expr : expr ADD . expr  (3)
+
+	PARO  shift 3
+	INT  shift 4
+	FLOAT  shift 5
+	VAR  shift 6
+	.  error
+
+	expr  goto 19
+
+
+state 12
+	expr : expr SUB . expr  (4)
+
+	PARO  shift 3
+	INT  shift 4
+	FLOAT  shift 5
+	VAR  shift 6
+	.  error
+
+	expr  goto 20
+
+
+state 13
+	expr : expr MUL . expr  (5)
+
+	PARO  shift 3
+	INT  shift 4
+	FLOAT  shift 5
+	VAR  shift 6
+	.  error
+
+	expr  goto 21
+
+
+state 14
+	expr : expr DIV . expr  (6)
+
+	PARO  shift 3
+	INT  shift 4
+	FLOAT  shift 5
+	VAR  shift 6
+	.  error
+
+	expr  goto 22
+
+
+state 15
+	expr : expr EXP . expr  (7)
+
+	PARO  shift 3
+	INT  shift 4
+	FLOAT  shift 5
+	VAR  shift 6
+	.  error
+
+	expr  goto 23
+
+
+state 16
+	statement : expr SEP . statement  (1)
+
+	PARO  shift 3
+	INT  shift 4
+	FLOAT  shift 5
+	VAR  shift 6
+	.  error
+
+	statement  goto 24
+	expr  goto 8
+
+
+state 17
+	expr : PARO expr PARF .  (9)
+
+	.  reduce 9
+
+
+state 18
+	expr : expr . ADD expr  (3)
+	expr : expr . SUB expr  (4)
+	expr : expr . MUL expr  (5)
+	expr : expr . DIV expr  (6)
+	expr : expr . EXP expr  (7)
+	expr : VAR EQU expr .  (8)
+
+	ADD  shift 11
+	SUB  shift 12
+	MUL  shift 13
+	DIV  shift 14
+	EXP  shift 15
+	$end  reduce 8
+	PARF  reduce 8
+	SEP  reduce 8
+
+
+state 19
+	expr : expr . ADD expr  (3)
+	expr : expr ADD expr .  (3)
+	expr : expr . SUB expr  (4)
+	expr : expr . MUL expr  (5)
+	expr : expr . DIV expr  (6)
+	expr : expr . EXP expr  (7)
+
+	MUL  shift 13
+	DIV  shift 14
+	EXP  shift 15
+	$end  reduce 3
+	ADD  reduce 3
+	SUB  reduce 3
+	PARF  reduce 3
+	SEP  reduce 3
+
+
+state 20
+	expr : expr . ADD expr  (3)
+	expr : expr . SUB expr  (4)
+	expr : expr SUB expr .  (4)
+	expr : expr . MUL expr  (5)
+	expr : expr . DIV expr  (6)
+	expr : expr . EXP expr  (7)
+
+	MUL  shift 13
+	DIV  shift 14
+	EXP  shift 15
+	$end  reduce 4
+	ADD  reduce 4
+	SUB  reduce 4
+	PARF  reduce 4
+	SEP  reduce 4
+
+
+state 21
+	expr : expr . ADD expr  (3)
+	expr : expr . SUB expr  (4)
+	expr : expr . MUL expr  (5)
+	expr : expr MUL expr .  (5)
+	expr : expr . DIV expr  (6)
+	expr : expr . EXP expr  (7)
+
+	DIV  shift 14
+	EXP  shift 15
+	$end  reduce 5
+	ADD  reduce 5
+	SUB  reduce 5
+	MUL  reduce 5
+	PARF  reduce 5
+	SEP  reduce 5
+
+
+state 22
+	expr : expr . ADD expr  (3)
+	expr : expr . SUB expr  (4)
+	expr : expr . MUL expr  (5)
+	expr : expr . DIV expr  (6)
+	expr : expr DIV expr .  (6)
+	expr : expr . EXP expr  (7)
+
+	EXP  shift 15
+	$end  reduce 6
+	ADD  reduce 6
+	SUB  reduce 6
+	MUL  reduce 6
+	DIV  reduce 6
+	PARF  reduce 6
+	SEP  reduce 6
+
+
+state 23
+	expr : expr . ADD expr  (3)
+	expr : expr . SUB expr  (4)
+	expr : expr . MUL expr  (5)
+	expr : expr . DIV expr  (6)
+	expr : expr . EXP expr  (7)
+	expr : expr EXP expr .  (7)
+
+	EXP  shift 15
+	$end  reduce 7
+	ADD  reduce 7
+	SUB  reduce 7
+	MUL  reduce 7
+	DIV  reduce 7
+	PARF  reduce 7
+	SEP  reduce 7
+
+
+state 24
+	statement : expr SEP statement .  (1)
+
+	.  reduce 1
+
+
+15 terminals, 4 nonterminals
+14 grammar rules, 25 states
